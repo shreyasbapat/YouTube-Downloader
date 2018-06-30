@@ -10,11 +10,6 @@ entry = Entry(root, width=50)
 entry.pack(side=TOP,padx=10,pady=10)
 link="https://www.youtube.com/watch?v=xWOoBJUqlbI"
 
-def browse_button():
-    filename = filedialog.askdirectory()
-    print(filename)
-    return filename
-
 def printtit(obj):
 	Label(text=obj.title).pack(side=BOTTOM,padx=10,pady=10)
 
@@ -33,10 +28,13 @@ def ondown(link ="https://www.youtube.com/watch?v=xWOoBJUqlbI"):
     
 def func(event):
     url = entry.get()
-    print(url)
+    video = YouTube(url)
+    stream = video.streams.first()
+
+    stream.download()
+
 root.bind('<Return>', func)
 Button(root, text='View', command=onok).pack(side=TOP)
-Button(text="Browse", command=browse_button).grid(row=0, column=3)
 Button(root, text='Download', command=ondown).pack(side=LEFT)
 Button(root, text='CLOSE',fg="red",command=root.destroy).pack(side= RIGHT)
 
