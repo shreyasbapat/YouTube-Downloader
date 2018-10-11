@@ -32,7 +32,7 @@ def ondown():
 def desk():
     print(file_path)
     entry = "[Desktop Entry] \nName=YouTube Downloader \nVersion=1.0 \n" \
-            "Exec=python3 " + file_path + "/YouTube.py \n" \
+            "Exec=file_path + "/YouTube \n" \
             "Icon=/usr/share/pixmaps/python.xpm \nComment=Download YT videos \n" \
             "Type=Application \nTerminal=false \nStartupNotify=true \n" \
             "Categories=Video;GTK;GNOME"
