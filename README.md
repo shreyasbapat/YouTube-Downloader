@@ -3,6 +3,12 @@ A GUI Based Application to download videos from YouTube for free!
 
 # Install
 
+You can directly run:
+```
+pip install -r requirements.txt
+```
+Or install everything manually by,
+
 ```
 pip install pytube
 pip install tkinter
