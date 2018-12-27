@@ -1,4 +1,4 @@
-import os
+import requests
 import tkinter as tk
 from tkinter import *
 from pytube import YouTube
@@ -6,7 +6,7 @@ import pyperclip as pc
 import validators as vd
 from PIL import ImageTk, Image
 from io import BytesIO
-import requests
+import os
 
 root = tk.Tk()
 root.title("Youtube Video Downloader")
