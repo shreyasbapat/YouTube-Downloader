@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=Downloader
+Comment=Open Youtube Downloader
+Exec=bash -c "/usr/share/ytd"
+Icon=/usr/share/pixmaps/ytd.png
+Terminal=false
+Type=Application
+Keywords=ytd;
+
+X-Desktop-File-Install-Version=0.2.0

@@ -1,0 +1,4 @@
+requests
+pytube
+pyperclip
+validators
