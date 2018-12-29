@@ -3,7 +3,7 @@ How to Contribute
 
 1) Fork this repository to your github account.
 2) Clone the forked repository. 
-    ``git clone https://github.com/username/YouTube-Downloader``
+    ``git clone https://github.com/username/YouTube-Downloader.git``
 3) Create a new branch.
     ``git checkout -b NewBranchName``
 4) Make your changes.
