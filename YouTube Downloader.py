@@ -5,6 +5,8 @@ import requests
 import tkinter as tk
 from tkinter import *
 
+import threading
+
 from pytube import YouTube
 
 import pyperclip as pc
@@ -108,20 +110,24 @@ def onok():
 
 
 def ondown():
-    pathe = os.path.expanduser("~") + "/Downloads"
-    os.chdir(pathe)
-    url = E_url.get()
-    video = YouTube(url)
-    selectedOptionList = selectedOption.get().split()
+    def downloading(url, Selected_Option):
+        pathe = os.path.expanduser("~") + "/Downloads"
+        os.chdir(pathe)
+        video = YouTube(url)
+        if Selected_Option == "Select Quality":
+            video.streams.first().download()
+            print("Default video downloaded.")
+        else:
+            selectedOptionList = Selected_Option.split()
+            selectedItag = selectedOptionList[-1]
+            selectedStream = video.streams.get_by_itag(selectedItag)
+            selectedStream.download()
+            print("Selected video downloaded.")
 
-    if not selectedOptionList:
-        video.streams.first().download()
-        print("Default video downloaded.")
-    else:
-        selectedItag = selectedOptionList[-1]
-        selectedStream = video.streams.get_by_itag(selectedItag)
-        selectedStream.download()
-        print("Selected video downloaded.")
+    t_downloading = threading.Thread(
+        target=downloading, args=(E_url.get(), selectedOption.get())
+    )
+    t_downloading.start()
 
 
 def Set_proxy_window():
