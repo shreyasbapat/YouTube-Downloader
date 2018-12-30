@@ -104,16 +104,34 @@ def onok():
     response = requests.get(t_url)
     img = Image.open(BytesIO(response.content))
     img = ImageTk.PhotoImage(img)
-    L_image = Label(root, image=img)
-    L_image.place(x=300, y=75, height=90, width=120)
+    L_image.configure(image=img)
     root.mainloop()
 
 
 def ondown():
     def downloading(url, Selected_Option):
+        dir_path = os.getcwd()
+        print(dir_path)
         pathe = os.path.expanduser("~") + "/Downloads"
         os.chdir(pathe)
-        video = YouTube(url)
+
+        def progress_function(stream, chunk, file_handle, bytes_remaining):
+            percentage = round((1 - bytes_remaining / stream.filesize) * 100)
+            L_gif.configure(image=frames[percentage])
+            print(percentage)
+
+        frames = [
+            PhotoImage(
+                file=dir_path + "/Assets/Images/percent.gif",
+                format="gif -index %i" % (i),
+            )
+            for i in range(101)
+        ]
+        W_download = tk.Toplevel()
+        L_gif = Label(W_download)
+        L_gif.pack()
+        video = YouTube(url, on_progress_callback=progress_function)
+        W_download.title(video.title)
         if Selected_Option == "Select Quality":
             video.streams.first().download()
             print("Default video downloaded.")
@@ -124,9 +142,9 @@ def ondown():
             selectedStream.download()
             print("Selected video downloaded.")
 
-    t_downloading = threading.Thread(
-        target=downloading, args=(E_url.get(), selectedOption.get())
-    )
+    url = E_url.get()
+    Selected_Option = selectedOption.get()
+    t_downloading = threading.Thread(target=downloading, args=(url, Selected_Option))
     t_downloading.start()
 
 
