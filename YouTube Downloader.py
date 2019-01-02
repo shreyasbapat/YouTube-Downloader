@@ -21,6 +21,7 @@ root = tk.Tk()
 root.title("Youtube Video Downloader")
 img = ImageTk.PhotoImage(Image.open("Assets/Images/Default.png"))
 L_image = Label(root, image=img)
+dir_path = os.getcwd()
 
 
 def ret_copied_url():
@@ -86,7 +87,13 @@ def onok():
     for stream in videoStreams:
         if stream.resolution != None:
             qualityOptions.append(
-                stream.resolution + " " + stream.subtype + " tag: " + stream.itag
+                stream.resolution
+                + " "
+                + stream.subtype
+                + " "
+                + str(round(stream.filesize / 1048576, 1))
+                + "Mb tag: "
+                + stream.itag
             )
 
     # Reset selectedOption and delete all old options
@@ -104,8 +111,7 @@ def onok():
     response = requests.get(t_url)
     img = Image.open(BytesIO(response.content))
     img = ImageTk.PhotoImage(img)
-    L_image = Label(root, image=img)
-    L_image.place(x=300, y=75, height=90, width=120)
+    L_image.configure(image=img)
     root.mainloop()
 
 
@@ -113,7 +119,30 @@ def ondown():
     def downloading(url, Selected_Option):
         pathe = os.path.expanduser("~") + "/Downloads"
         os.chdir(pathe)
-        video = YouTube(url)
+
+        def progress_function(stream, chunk, file_handle, bytes_remaining):
+            percentage = round((1 - bytes_remaining / stream.filesize) * 100)
+            L_gif.configure(image=frames[percentage])
+
+        frames = [
+            PhotoImage(
+                file=dir_path + "/Assets/Images/percent.gif",
+                format="gif -index %i" % (i),
+            )
+            for i in range(101)
+        ]
+        W_download = tk.Toplevel(height=300, width=300)
+        video = YouTube(url, on_progress_callback=progress_function)
+        W_download.title("Downloading " + video.title)
+        downloading_message = (
+            "The video : "
+            + video.title
+            + " is being downloaded, and will appear in your default downloads directory"
+        )
+        Message(W_download, text=downloading_message).pack()
+        L_gif = Label(W_download, image=frames[0])
+        L_gif.pack()
+
         if Selected_Option == "Select Quality":
             video.streams.first().download()
             print("Default video downloaded.")
@@ -123,10 +152,13 @@ def ondown():
             selectedStream = video.streams.get_by_itag(selectedItag)
             selectedStream.download()
             print("Selected video downloaded.")
+        W_download.destroy()
+        os.chdir(dir_path)
+        L_gif.configure(image=frames[100])
 
-    t_downloading = threading.Thread(
-        target=downloading, args=(E_url.get(), selectedOption.get())
-    )
+    url = E_url.get()
+    Selected_Option = selectedOption.get()
+    t_downloading = threading.Thread(target=downloading, args=(url, Selected_Option))
     t_downloading.start()
 
 
@@ -194,11 +226,11 @@ B_exit = Button(root, text="CLOSE", fg="red", command=root.destroy)
 # Placing
 Label(text="Link :").place(x=20, y=20)
 E_url.place(y=20, x=60, width=400)
-videoTitle.place(x=25, y=50, width=450)
-qualityOptionsMenu.place(x=25, y=75, width=180)
-B_setproxy.place(x=25, y=110)
-B_downlaod.place(x=115, y=110)
-B_exit.place(x=80, y=145)
+videoTitle.place(x=15, y=50, width=450)
+qualityOptionsMenu.place(x=25, y=75, width=220)
+B_setproxy.place(x=45, y=110)
+B_downlaod.place(x=135, y=110)
+B_exit.place(x=100, y=145)
 B_refresh.place(y=170, x=320)
 L_image.place(x=300, y=75, height=90, width=120)
 
