@@ -131,11 +131,18 @@ def ondown():
             )
             for i in range(101)
         ]
-        W_download = tk.Toplevel()
+        W_download = tk.Toplevel(height=300, width=300)
+        video = YouTube(url, on_progress_callback=progress_function)
+        W_download.title("Downloading " + video.title)
+        downloading_message = (
+            "The video : "
+            + video.title
+            + " is being downloaded, and will appear in your default downloads directory"
+        )
+        Message(W_download, text=downloading_message).pack()
         L_gif = Label(W_download, image=frames[0])
         L_gif.pack()
-        video = YouTube(url, on_progress_callback=progress_function)
-        W_download.title(video.title)
+
         if Selected_Option == "Select Quality":
             video.streams.first().download()
             print("Default video downloaded.")
@@ -145,6 +152,7 @@ def ondown():
             selectedStream = video.streams.get_by_itag(selectedItag)
             selectedStream.download()
             print("Selected video downloaded.")
+        W_download.destroy()
         os.chdir(dir_path)
         L_gif.configure(image=frames[100])
 
